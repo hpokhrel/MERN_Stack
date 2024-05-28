@@ -4,8 +4,9 @@ const mongoose = require('mongoose');
 const UserModel = mongoose.model("UserModel");
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-
 const {JWT_SECRET} = require('../config.js');
+
+const protectedResources = require('../middleware/protectedResources');
 
 router.get('/', (request, response) => {
     response.send("Welcome to MERN Stack World");
@@ -22,6 +23,10 @@ router.get('/', (request, response) => {
 //         response.json({result: "Registered successfully"})
 //     }
 // });
+
+router.get("/secured", protectedResources, (request, response) => {
+    response.send("Welcome to Secured Area !");
+})
 
 router.post('/login', (request ,response)=>{
     const {email, password} = request.body;

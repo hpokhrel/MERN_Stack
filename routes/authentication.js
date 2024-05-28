@@ -2,7 +2,10 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 const UserModel = mongoose.model("UserModel");
-const bcrypt = require('bcryptjs')
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+
+const {JWT_SECRET} = require('../config.js');
 
 router.get('/', (request, response) => {
     response.send("Welcome to MERN Stack World");
@@ -33,7 +36,9 @@ router.post('/login', (request ,response)=>{
         }
         bcrypt.compare(password, dbUser.password).then((didMatch)=>{
             if(didMatch){
-                response.status(200).json({result: "User logged in successfully"});
+                // response.status(200).json({result: "User logged in successfully"});
+                const jwtToken = jwt.sign({_id : dbUser._id}, JWT_SECRET);
+                response.json({token: jwtToken});
             }else{
                 return response.status(400).json({ error: "Invalid Credentials"});
             }
